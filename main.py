@@ -39,12 +39,20 @@ def df_transformation(df):
     df_start_col = df[mask_start].dropna(axis=1, how='all').columns
     df_start_col_idx = df.columns.get_loc(df_start_col[0])
     mask_end = df == 'Ответственное\nлицо '
+    if len(df[mask_end].dropna()) == 0:
+        mask_end = df == 'Ответственное\nлицо'
     df_end_row = df[mask_end].dropna(axis=0, how='all').index.values
 
-    df1 = df.iloc[df_start_row[0] + 7:df_start_row[1], df_start_col_idx + 3:df_start_col_idx + 37]
-    df2 = df.iloc[df_start_row[1] + 7:df_end_row[0] - 1, df_start_col_idx + 3:df_start_col_idx + 37]
+    if len(df_start_row) == 1:
+        df3 = df.iloc[df_start_row[0] + 7:df_end_row[0] - 1, df_start_col_idx + 3:df_start_col_idx + 37].reset_index(drop=True)
+    elif len(df_start_row) == 2:
+        df1 = df.iloc[df_start_row[0] + 7:df_start_row[1], df_start_col_idx + 3:df_start_col_idx + 37]
+        df2 = df.iloc[df_start_row[1] + 7:df_end_row[0] - 1, df_start_col_idx + 3:df_start_col_idx + 37]
+        df3 = pd.concat([df1, df2], ignore_index=True)
+    else:
+        print('Количество листов в маршрутном листе больше 3. Обратитесь к администратору')
+        input('Для завершения работы нажмите Enter')
 
-    df3 = pd.concat([df1, df2], ignore_index=True)
     df3 = df3.dropna(axis=0, how='all')
     df3 = df3.dropna(axis=1, how='all')
     df_len = len(df3)
