@@ -40,7 +40,7 @@ def df_transformation(df):
     df_start_col_idx = df.columns.get_loc(df_start_col[0])
     mask_end = df == 'Ответственное\nлицо '
     if len(df[mask_end].dropna()) == 0:
-        mask_end = df == 'Ответственное\nлицо'
+        mask_end = df == 'Директор'
     df_end_row = df[mask_end].dropna(axis=0, how='all').index.values
 
     if len(df_start_row) == 1:
